@@ -1,0 +1,51 @@
+<head>
+<style>
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#col1 {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:300px;
+    width:700px;
+    float:left;
+    padding:5px;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th {
+    text-align: left;
+}
+table#t01 {
+    width: 100%;
+    background-color: #f1f1c1;
+}
+table#t01 tr:nth-child(even) {
+    background-color: #eee;
+}
+table#t01 tr:nth-child(odd) {
+    background-color: #fff;
+}
+table#t01 th {
+    color: white;
+    background-color: black;
+}
+</style>
+</head>
+<div id="header">
+<h1> All Discussions </h1>
+</div>
+<div id="col1">
+  <table id="t01">
+    <caption> Discussions </caption>
+    <th>DiscussionID</th><th>ProspectID</th><th>UserID</th><th>Query</th><th>Answer</th>
+    {{range .}}
+    <tr><td>{{.DiscussionID}}</td><td>{{.ProspectID}}</td><td>{{.UserID}}</td><td>{{.Query}}</td><td>{{.Answer}}</td></tr>
+    {{end}}
+  </table>
+</div>
