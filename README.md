@@ -2,7 +2,12 @@ This is a webservice using following
  - golang's net/http capabilities
  - golang's html/template capabilities
  - go-sqlite driver, which connects to sqlite
- - gorrila mux
+ - gorilla mux
+
+To use this app following are pre-requisites
+ - go should be installed from here 'https://golang.org/dl/'
+ - get gorilla mux using 'go get github.com/gorilla/mux'
+ - get go-sqlite using 'go get github.com/mattn/go-sqlite3'
 
 This service is used by an ios client making REST calls
 to this. Although, can also be invoked from any client making
