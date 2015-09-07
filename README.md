@@ -2,6 +2,7 @@ This is a webservice using following
  - golang's net/http capabilities
  - golang's html/template capabilities
  - go-sqlite driver, which connects to sqlite
+ - crypto/hmac for securing the webservice
  - gorilla mux
 
 To use this app following are pre-requisites
@@ -63,3 +64,9 @@ CREATE TABLE "discussions" (
 `Query` TEXT,
 `Answer` TEXT,
  FOREIGN KEY(ProspectID) REFERENCES prospects(ProspectID));
+
+ The prospect APIs are secured using hmac authentication, hence need to be accessed
+ using HMAC key
+ e.g. to access prospect/view/
+
+ curl -H "Content-Type: application/json" -H 'Authentication: [HMAC Key]' http://localhost:8080/prospect/view/

@@ -127,10 +127,6 @@ func (prospect *Prospect) Update() (err error) {
 	db := Connect()
 	defer db.Close()
 
-	if prospect.ProspectID < 0 {
-		return err
-	}
-
 	updateStr := ""
 	if len(prospect.Name) > 0 {
 		updateStr = updateStr + " Name = '" + prospect.Name + "',"

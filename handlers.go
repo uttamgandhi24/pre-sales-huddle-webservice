@@ -26,3 +26,14 @@ func AddHandlers() {
 
 	http.ListenAndServe(":8080", h)
 }
+
+func AuthenticateRequest(header map[string][]string, requestType string, requestKey string) bool {
+	if header["Authentication"] == nil {
+		return false
+	}
+	HMACValue := header["Authentication"][0]
+	if HMACValue != ComputeHmac256(requestType, requestKey) {
+		return false
+	}
+	return true
+}

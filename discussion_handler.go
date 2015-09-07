@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-  "html/template"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 )
@@ -32,10 +32,10 @@ func DiscussionViewByProspectId(w http.ResponseWriter, r *http.Request) {
 var templates = template.Must(template.ParseFiles("DiscussionView.html"))
 
 func DiscussionHTMLviewHandler(w http.ResponseWriter, r *http.Request) {
-  err := templates.ExecuteTemplate(w, "DiscussionView.html", GetAllDiscussions())
-  if err != nil {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+	err := templates.ExecuteTemplate(w, "DiscussionView.html", GetAllDiscussions())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func DiscussionAddHandler(w http.ResponseWriter, r *http.Request) {
