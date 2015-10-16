@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"net/http"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
+	"net/http"
 )
 
 func AddHandlers(TLS bool, port string, cert string, key string) {
@@ -31,13 +31,13 @@ func AddHandlers(TLS bool, port string, cert string, key string) {
 
 	if TLS {
 		fmt.Println("HTTPS Listening on....", port)
-		err = http.ListenAndServeTLS(port,cert,key, h)
+		err = http.ListenAndServeTLS(port, cert, key, h)
 	} else {
 		fmt.Println("HTTP Listening on....", port)
 		err = http.ListenAndServe(port, h)
 	}
 
-	if err!=nil {
+	if err != nil {
 		log.Fatal(err)
 	}
 }
