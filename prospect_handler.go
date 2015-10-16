@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// strings used for HMAC auth
 const kProspectAdd string = "POST+/prospect/add/"
 const kProspectView string = "GET+/prospect/view/"
 const kProspectUpdate string = "POST+/prospect/update/"
@@ -20,6 +21,7 @@ func ProspectViewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(GetAllProspects()); err != nil {
 		fmt.Println("Err")

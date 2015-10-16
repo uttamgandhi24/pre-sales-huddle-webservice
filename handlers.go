@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"fmt"
+	"log"
 )
 
 func AddHandlers() {
@@ -22,17 +24,25 @@ func AddHandlers() {
 	h.HandleFunc("/discussion/view/", DiscussionViewHandler)
 	h.HandleFunc("/discussion/view/prospectid/{id:[0-9]+}", DiscussionViewByProspectId)
 	h.HandleFunc("/discussion/update/", DiscussionUpdateHandler)
-	h.HandleFunc("/discussion/view/html/", DiscussionHTMLviewHandler)
+	//TODO remove comment for enabling DiscussionViewHTML
+	//h.HandleFunc("/discussion/view/html/", DiscussionHTMLviewHandler)
 
-	http.ListenAndServe(":8080", h)
+	err := http.ListenAndServeTLS(":8080","server.pem", "server.key", h)
+
+	fmt.Println("Listening on 8080....")
+	if err!=nil {
+		log.Fatal(err)
+	}
 }
 
 func AuthenticateRequest(header map[string][]string, requestType string, requestKey string) bool {
+	return true //TODO disabling authentication as of now, remove this to enable
 	if header["Authentication"] == nil {
 		return false
 	}
 	HMACValue := header["Authentication"][0]
 	if HMACValue != ComputeHmac256(requestType, requestKey) {
+		fmt.Println(ComputeHmac256(requestType, requestKey))
 		return false
 	}
 	return true
