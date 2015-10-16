@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func AddHandlers() {
+func AddHandlers(TLS bool, port string, cert string, key string) {
 	h := mux.NewRouter()
 	h.HandleFunc("/prospect/view/", ProspectViewHandler)
 	h.HandleFunc("/prospect/view/{criteria}", ProspectViewCriteriaHandler)
@@ -27,9 +27,16 @@ func AddHandlers() {
 	//TODO remove comment for enabling DiscussionViewHTML
 	//h.HandleFunc("/discussion/view/html/", DiscussionHTMLviewHandler)
 
-	err := http.ListenAndServeTLS(":8080","server.pem", "server.key", h)
+	var err error
 
-	fmt.Println("Listening on 8080....")
+	if TLS {
+		fmt.Println("HTTPS Listening on....", port)
+		err = http.ListenAndServeTLS(port,cert,key, h)
+	} else {
+		fmt.Println("HTTP Listening on....", port)
+		err = http.ListenAndServe(port, h)
+	}
+
 	if err!=nil {
 		log.Fatal(err)
 	}
