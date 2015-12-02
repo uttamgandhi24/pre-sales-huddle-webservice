@@ -1,56 +1,48 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 )
 
-func AddHandlers(TLS bool, port string, cert string, key string) {
-	h := mux.NewRouter()
-	h.HandleFunc("/prospect/view/", ProspectViewHandler)
-	h.HandleFunc("/prospect/view/{criteria}", ProspectViewCriteriaHandler)
-	h.HandleFunc("/prospect/add/", ProspectAddHandler)
-	h.HandleFunc("/prospect/update/", ProspectUpdateHandler)
+func AddHandlers(router *mux.Router) {
+	router.HandleFunc("/prospect/all/", ProspectViewHandler).Methods("GET")
+	router.HandleFunc("/prospect/", ProspectAddHandler).Methods("POST")
+	router.HandleFunc("/prospect/", ProspectUpdateHandler).Methods("PUT")
 
-	h.HandleFunc("/participant/add/", ParticipantAddHandler)
-	h.HandleFunc("/participant/view/", ParticipantViewHandler)
-	h.HandleFunc("/participant/view/userid/{userid}", ParticipantViewByUserId)
-	h.HandleFunc("/participant/view/prospectid/{id:[0-9]+}", ParticipantViewByProspectId)
-	h.HandleFunc("/participant/update/", ParticipantUpdateHandler)
+	router.HandleFunc("/participant/all/", ParticipantViewHandler).Methods("GET")
+	router.HandleFunc("/participant/userid/{userid}", ParticipantViewByUserId).
+		Methods("GET")
+	router.HandleFunc("/participant/prospectid/{id:[0-9]+}",
+		ParticipantViewByProspectId).Methods("GET")
+	router.HandleFunc("/participant/add/", ParticipantAddHandler).Methods("POST")
+	router.HandleFunc("/participant/update/", ParticipantUpdateHandler).
+		Methods("PUT")
 
-	h.HandleFunc("/discussion/add/", DiscussionAddHandler)
-	h.HandleFunc("/discussion/view/", DiscussionViewHandler)
-	h.HandleFunc("/discussion/view/prospectid/{id:[0-9]+}", DiscussionViewByProspectId)
-	h.HandleFunc("/discussion/update/", DiscussionUpdateHandler)
-	//TODO remove comment for enabling DiscussionViewHTML
-	//h.HandleFunc("/discussion/view/html/", DiscussionHTMLviewHandler)
-
-	var err error
-
-	if TLS {
-		fmt.Println("HTTPS Listening on....", port)
-		err = http.ListenAndServeTLS(port, cert, key, h)
-	} else {
-		fmt.Println("HTTP Listening on....", port)
-		err = http.ListenAndServe(port, h)
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	router.HandleFunc("/discussion/", DiscussionViewHandler).Methods("GET")
+	router.HandleFunc("/discussion/prospectid/{id:[0-9]+}",
+		DiscussionViewByProspectId).Methods("GET")
+	router.HandleFunc("/discussion/", DiscussionAddHandler).Methods("POST")
+	router.HandleFunc("/discussion/", DiscussionUpdateHandler).Methods("PUT")
 }
 
-func AuthenticateRequest(header map[string][]string, requestType string, requestKey string) bool {
-	return true //TODO disabling authentication as of now, remove this to enable
-	if header["Authentication"] == nil {
-		return false
+type PSHServer struct {
+	router *mux.Router
+}
+
+func (server *PSHServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Methods", `POST, GET, OPTIONS,
+        	PUT, DELETE`)
+		w.Header().Set("Access-Control-Allow-Headers",
+			`Accept, Content-Type, Content-Length, Accept-Encoding,
+            X-CSRF-Token, Authorization`)
 	}
-	HMACValue := header["Authentication"][0]
-	if HMACValue != ComputeHmac256(requestType, requestKey) {
-		fmt.Println(ComputeHmac256(requestType, requestKey))
-		return false
+	// Stop here if its Preflighted OPTIONS request
+	if r.Method == "OPTIONS" {
+		return
 	}
-	return true
+	// Lets Gorilla work
+	server.router.ServeHTTP(w, r)
 }

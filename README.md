@@ -1,16 +1,15 @@
 This is a webservice using following
- - golang's net/http capabilities
- - golang's html/template capabilities
+ - golang's net/http
+ - golang's html/template
  - go-sqlite driver, which connects to sqlite
- - crypto/hmac for securing the webservice
- - gorilla mux
+ - gorilla mux router
 
 To use this app following are pre-requisites
  - go should be installed from here 'https://golang.org/dl/'
  - get gorilla mux using 'go get github.com/gorilla/mux'
  - get go-sqlite using 'go get github.com/mattn/go-sqlite3'
  - build service using 'go install pre-sales-huddle-webservice'
- - copy pre-sales-huddle.db, server.pem, server.key in bin directory
+ - copy pre-sales-huddle.db in bin directory
  - run the service from bin directory './pre-sales-huddle-webservice'
 
 This service is used by an ios client making REST calls
@@ -19,23 +18,23 @@ REST calls.
 
 Supported REST APIs
 The root is http://localhost:8080/
-Supported paths are
- "/prospect/view/"
- "/prospect/view/{criteria}"
- "/prospect/add/"
- "/prospect/update/"
+Supported routes are
+GET ->   "/prospect/all/"
+          "/prospect/view/{criteria}"
+POST ->  "/prospect/"
+PUT  ->  "/prospect/"
 
- "/participant/add/"
- "/participant/view/"
- "/participant/view/userid/{userid}"
- "/participant/view/prospectid/{id:[0-9]+}"
- "/participant/update/"
 
- "/discussion/add/"
- "/discussion/view/"
- "/discussion/view/prospectid/{id:[0-9]+}"
- "/discussion/update/"
- "/discussion/view/html/"
+GET ->  "/participant/all/"
+    ->  "/participant/userid/{userid}"
+    ->  "/participant/prospectid/{id:[0-9]+}"
+POST->  "/participant/"
+PUT ->  "/participant/"
+
+GET ->  "/discussion/all/"
+    ->  "/discussion/view/prospectid/{id:[0-9]+}"
+POST->  "/discussion/"
+PUT ->  "/discussion/"
 
  Table Schema
 
@@ -67,9 +66,3 @@ CREATE TABLE "discussions" (
 `Query` TEXT,
 `Answer` TEXT,
  FOREIGN KEY(ProspectID) REFERENCES prospects(ProspectID));
-
- The prospect APIs are secured using hmac authentication, hence need to be accessed
- using HMAC key
- e.g. to access prospect/view/
-
- curl -H "Content-Type: application/json" -H 'Authentication: [HMAC Key]' http://localhost:8080/prospect/view/

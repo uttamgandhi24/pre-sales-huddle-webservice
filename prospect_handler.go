@@ -8,20 +8,8 @@ import (
 	"net/http"
 )
 
-// strings used for HMAC auth
-const kProspectAdd string = "POST+/prospect/add/"
-const kProspectView string = "GET+/prospect/view/"
-const kProspectUpdate string = "POST+/prospect/update/"
-
-const kProspectKey string = "PRESALES_PROSPECT_KEY"
-
 func ProspectViewHandler(w http.ResponseWriter, r *http.Request) {
-	if !AuthenticateRequest(r.Header, kProspectView, kProspectKey) {
-		http.Error(w, "Authentication Error", http.StatusUnauthorized)
-		return
-	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(GetAllProspects()); err != nil {
 		fmt.Println("Err")
@@ -30,10 +18,6 @@ func ProspectViewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
-	if !AuthenticateRequest(r.Header, kProspectView, kProspectKey) {
-		http.Error(w, "Authentication Error", http.StatusUnauthorized)
-		return
-	}
 	vars := mux.Vars(r)
 	criteria := vars["criteria"]
 
@@ -44,11 +28,6 @@ func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
-	if !AuthenticateRequest(r.Header, kProspectAdd, kProspectKey) {
-		http.Error(w, "Authentication Error", http.StatusUnauthorized)
-		return
-	}
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -73,10 +52,7 @@ func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	if !AuthenticateRequest(r.Header, kProspectUpdate, kProspectKey) {
-		http.Error(w, "Authentication Error", http.StatusUnauthorized)
-		return
-	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)

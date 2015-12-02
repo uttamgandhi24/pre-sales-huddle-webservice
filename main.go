@@ -1,13 +1,23 @@
 package main
 
 import (
-	"sync"
+	"fmt"
+	"github.com/gorilla/mux"
+	"net/http"
 )
 
 func main() {
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go AddHandlers(true, ":8080", "server.pem", "server.key")
-	go AddHandlers(false, ":8280", "", "")
-	wg.Wait()
+	// Create a new gorilla router
+	router := mux.NewRouter()
+
+	// Add handler functions for routes
+	AddHandlers(router)
+
+	http.Handle("/", &PSHServer{router})
+
+	fmt.Println("Listening on 8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
