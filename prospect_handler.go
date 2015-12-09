@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 )
@@ -17,7 +17,7 @@ func ProspectViewHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
+/*func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	criteria := vars["criteria"]
 
@@ -26,7 +26,7 @@ func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
-
+*/
 func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -64,7 +64,7 @@ func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if t.ProspectID <= 0 {
+	if len(t.ProspectID) == 0 {
 		http.Error(w, "Invalid Data", http.StatusBadRequest)
 		fmt.Println(t.ProspectID)
 		return

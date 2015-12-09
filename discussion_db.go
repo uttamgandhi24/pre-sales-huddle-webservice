@@ -1,93 +1,71 @@
 package main
 
 import (
+	"gopkg.in/mgo.v2/bson"
 	"log"
 )
 
 type Discussion struct {
-	DiscussionID int    `bson:"DiscussionID"`
-	ProspectID   int    `bson:"ProspectID"`
-	UserID       string `bson:"UserID"`
-	Query        string `bson:"Query"`
-	Answer       string `bson:"Answer"`
+	DiscussionID bson.ObjectId `bson:"DiscussionID"`
+	ProspectID   bson.ObjectId `bson:"ProspectID"`
+	UserID       string        `bson:"UserID"`
+	Query        string        `bson:"Query"`
+	Answer       string        `bson:"Answer"`
 }
 
 func GetAllDiscussions() (discussions []Discussion) {
-	db := Connect()
-	defer db.Close()
+	session := gPshServer.session.Copy()
+	defer session.Close()
 
-	rows, err := db.Query("select * from discussions")
-	if err != nil {
-		log.Fatal(err)
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
+
+	iter := collection.Find(nil).Iter()
+	if iter == nil {
+		log.Fatal(kDiscussionsTable, " Iter nil")
+		return
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var discussion Discussion
-		rows.Scan(&discussion.DiscussionID, &discussion.ProspectID,
-			&discussion.UserID,
-			&discussion.Query,
-			&discussion.Answer)
 
+	var discussion Discussion
+	for iter.Next(&discussion) {
 		discussions = append(discussions, discussion)
 	}
-	return discussions
+	return
 }
-func GetDiscussionByProspectId(ProspectID string) (discussions []Discussion) {
-	db := Connect()
-	defer db.Close()
-	str := "select * from discussions where ProspectID=" + ProspectID + " order by DiscussionID desc"
-	rows, err := db.Query(str)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var discussion Discussion
-		rows.Scan(&discussion.DiscussionID, &discussion.ProspectID,
-			&discussion.UserID,
-			&discussion.Query,
-			&discussion.Answer)
+func GetDiscussionByProspectId(prospectID string) (discussions []Discussion) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
 
+	prospectid := bson.ObjectIdHex(prospectID)
+
+	iter := collection.Find(Discussion{ProspectID: prospectid}).Iter()
+	var discussion Discussion
+	for iter.Next(&discussion) {
 		discussions = append(discussions, discussion)
 	}
-	return discussions
+	return
 }
 
 func (discussion *Discussion) Write() (err error) {
-	db := Connect()
-	defer db.Close()
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
 
-	// insert
-	str := `INSERT INTO discussions(
-      ProspectID, UserID, Query, Answer)
-      values(?,?,?,?)`
-	stmt, err := db.Prepare(str)
-
-	_, err = stmt.Exec(discussion.ProspectID,
-		discussion.UserID, discussion.Query, discussion.Answer)
-
+	discussion.DiscussionID = bson.NewObjectId()
+	err = collection.Insert(discussion)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer stmt.Close()
-
 	return err
 }
 
 func (discussion *Discussion) Update() (err error) {
-	db := Connect()
-	defer db.Close()
-
-	if discussion.DiscussionID < 0 || len(discussion.Answer) == 0 {
-		return err
-	}
-
-	stmt, err := db.Prepare("UPDATE discussions Set Answer = ? where DiscussionID=?")
-
-	_, err = stmt.Exec(discussion.Answer, discussion.DiscussionID)
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
+	collection.Update(Discussion{DiscussionID:discussion.DiscussionID}, discussion)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return nil
 }

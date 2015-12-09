@@ -13,21 +13,22 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/participant/all/", ParticipantViewHandler).Methods("GET")
 	router.HandleFunc("/participant/userid/{userid}", ParticipantViewByUserId).
 		Methods("GET")
-	router.HandleFunc("/participant/prospectid/{id:[0-9]+}",
+	router.HandleFunc("/participant/prospectid/{id}",
 		ParticipantViewByProspectId).Methods("GET")
-	router.HandleFunc("/participant/add/", ParticipantAddHandler).Methods("POST")
-	router.HandleFunc("/participant/update/", ParticipantUpdateHandler).
+	router.HandleFunc("/participant/", ParticipantAddHandler).Methods("POST")
+	router.HandleFunc("/participant/", ParticipantUpdateHandler).
 		Methods("PUT")
 
-	router.HandleFunc("/discussion/", DiscussionViewHandler).Methods("GET")
-	router.HandleFunc("/discussion/prospectid/{id:[0-9]+}",
+	router.HandleFunc("/discussion/all/", DiscussionViewHandler).Methods("GET")
+	router.HandleFunc("/discussion/prospectid/{id}",
 		DiscussionViewByProspectId).Methods("GET")
 	router.HandleFunc("/discussion/", DiscussionAddHandler).Methods("POST")
 	router.HandleFunc("/discussion/", DiscussionUpdateHandler).Methods("PUT")
-}
 
-type PSHServer struct {
-	router *mux.Router
+	router.HandleFunc("/user/all/", UserViewHandler).Methods("GET")
+	router.HandleFunc("/user/email/{id}", UserViewByEmail).Methods("GET")
+	router.HandleFunc("/user/", UserAddHandler).Methods("POST")
+
 }
 
 func (server *PSHServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
