@@ -29,7 +29,7 @@ func GetUserByEmail(email string) (user User) {
 	defer session.Close()
 
 	collection := session.DB(kPreSalesDB).C(kUsersTable)
-	collection.Find(User{Email: email}).One(&user)
+	collection.Find(bson.M{"Email": email}).One(&user)
 	return
 }
 

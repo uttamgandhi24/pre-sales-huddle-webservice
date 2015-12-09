@@ -38,7 +38,7 @@ func GetDiscussionByProspectId(prospectID string) (discussions []Discussion) {
 
 	prospectid := bson.ObjectIdHex(prospectID)
 
-	iter := collection.Find(Discussion{ProspectID: prospectid}).Iter()
+	iter := collection.Find(bson.M{"ProspectID": prospectid}).Iter()
 	var discussion Discussion
 	for iter.Next(&discussion) {
 		discussions = append(discussions, discussion)
@@ -63,7 +63,7 @@ func (discussion *Discussion) Update() (err error) {
 	session := gPshServer.session.Copy()
 	defer session.Close()
 	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
-	collection.Update(Discussion{DiscussionID: discussion.DiscussionID}, discussion)
+	collection.Update(bson.M{"DiscussionID": discussion.DiscussionID}, discussion)
 	if err != nil {
 		log.Fatal(err)
 	}

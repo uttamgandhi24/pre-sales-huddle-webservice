@@ -56,7 +56,7 @@ func (prospect *Prospect) Update() (err error) {
 	defer session.Close()
 
 	collection := session.DB(kPreSalesDB).C(kProspectsTable)
-	collection.Update(Prospect{ProspectID: prospect.ProspectID}, prospect)
+	collection.Update(bson.M{"ProspectID": prospect.ProspectID}, prospect)
 	if err != nil {
 		log.Fatal(err)
 	}
