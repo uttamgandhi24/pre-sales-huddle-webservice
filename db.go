@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gopkg.in/mgo.v2"
 	"fmt"
+	"gopkg.in/mgo.v2"
 	"os"
 )
 

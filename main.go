@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"gopkg.in/mgo.v2"
 	"net/http"
-  "gopkg.in/mgo.v2"
 )
 
 type PSHServer struct {
-	router *mux.Router
+	router  *mux.Router
 	session *mgo.Session
 }
 
@@ -23,11 +23,11 @@ func main() {
 	// Add handler functions for routes
 	AddHandlers(router)
 
- // Dial into MongoDB database and get session handle
+	// Dial into MongoDB database and get session handle
 	session := ConnectDB()
 	defer session.Close()
 
-	gPshServer = PSHServer{router,session}
+	gPshServer = PSHServer{router, session}
 
 	http.Handle("/", &gPshServer)
 

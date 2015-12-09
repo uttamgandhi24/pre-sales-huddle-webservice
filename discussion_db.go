@@ -63,7 +63,7 @@ func (discussion *Discussion) Update() (err error) {
 	session := gPshServer.session.Copy()
 	defer session.Close()
 	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
-	collection.Update(Discussion{DiscussionID:discussion.DiscussionID}, discussion)
+	collection.Update(Discussion{DiscussionID: discussion.DiscussionID}, discussion)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 )
 
 type Prospect struct {
