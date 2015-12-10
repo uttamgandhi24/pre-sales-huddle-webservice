@@ -6,7 +6,6 @@ Supported routes are
 
 Prospect
 - GET  "/prospect/all/"
-- GET  "/prospect/view/{criteria}"
 - POST "/prospect/"
 - PUT  "/prospect/"
 
@@ -19,7 +18,7 @@ Participant
 
 Discussion
 - GET  "/discussion/all/"
-- GET  "/discussion/view/prospectid/{id}"
+- GET  "/discussion/prospectid/{id}"
 - POST "/discussion/"
 - PUT  "/discussion/"
 
