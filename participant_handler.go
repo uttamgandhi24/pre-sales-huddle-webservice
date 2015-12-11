@@ -51,7 +51,7 @@ func ParticipantViewByProspectId(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(GetParticipantByProspectId(prospectid)); err != nil {
+	if err := json.NewEncoder(w).Encode(GetParticipantsByProspectId(prospectid)); err != nil {
 		fmt.Println("Err")
 		panic(err)
 	}

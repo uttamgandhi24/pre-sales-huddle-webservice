@@ -27,7 +27,6 @@ func GetAllUsers() (users []User) {
 func GetUserByEmail(email string) (user User) {
 	session := gPshServer.session.Copy()
 	defer session.Close()
-
 	collection := session.DB(kPreSalesDB).C(kUsersTable)
 	collection.Find(bson.M{"Email": email}).One(&user)
 	return

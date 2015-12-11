@@ -26,7 +26,7 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/discussion/", DiscussionUpdateHandler).Methods("PUT")
 
 	router.HandleFunc("/user/all/", UserViewHandler).Methods("GET")
-	router.HandleFunc("/user/email/{id}", UserViewByEmail).Methods("GET")
+	router.HandleFunc("/user/email/{email}", UserViewByEmail).Methods("GET")
 	router.HandleFunc("/user/", UserAddHandler).Methods("POST")
 
 }

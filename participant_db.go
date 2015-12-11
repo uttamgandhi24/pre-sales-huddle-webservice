@@ -26,20 +26,16 @@ func GetAllParticipants() (participants []Participant) {
 	return participants
 }
 
-func GetParticipantByUserId(userID string) (participants []Participant) {
+func GetParticipantByUserId(userID string) (participant Participant) {
 	session := gPshServer.session.Copy()
 	defer session.Close()
 
 	collection := session.DB(kPreSalesDB).C(kParticipantsTable)
-	iter := collection.Find(bson.M{"UserID": userID}).Iter()
-	var participant Participant
-	for iter.Next(&participant) {
-		participants = append(participants, participant)
-	}
-	return participants
+	collection.Find(bson.M{"UserID": userID}).One(&participant)
+	return participant
 }
 
-func GetParticipantByProspectId(prospectID string) (participants []Participant) {
+func GetParticipantsByProspectId(prospectID string) (participants []Participant) {
 	session := gPshServer.session.Copy()
 	defer session.Close()
 
