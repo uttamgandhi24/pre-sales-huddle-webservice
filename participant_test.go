@@ -16,7 +16,10 @@ func TestParticipantAdd(t *testing.T) {
     "ProspectID":"5665594d4ba30d74a3c3aaaa",
     "UserID":"abc@synerzip.com",
     "Included":"YES",
-    "Participation":"YES"
+    "Participation":"YES",
+    "AvailableDate":"2015-12-31T00:00:00Z",
+    "Notes":"Some sample notes"
+
   }`)
 	req, _ := http.NewRequest("POST", "/participant/", bytes.NewBuffer(reqStr))
 	w := httptest.NewRecorder()
@@ -35,6 +38,9 @@ func TestParticipantAdd(t *testing.T) {
 	if participant.UserID != "abc@synerzip.com" {
 		t.Errorf("dummyParticipant not added")
 	}
+	if participant.AvailableDate != "2015-12-31T00:00:00Z" {
+		t.Errorf("dummyParticipant not added")
+	}
 }
 
 func TestParticipantUpdate(t *testing.T) {
@@ -43,7 +49,9 @@ func TestParticipantUpdate(t *testing.T) {
     "ProspectID":"5665594d4ba30d74a3c3aaaa",
     "UserID":"abc@synerzip.com",
     "Included":"NO",
-    "Participation":"YES"
+    "Participation":"YES",
+    "AvailableDate":"2016-01-15T00:00:00Z",
+    "Notes":"Some sample notes"
   }`)
 
 	req, _ := http.NewRequest("PUT", "/participant/",
@@ -64,6 +72,9 @@ func TestParticipantUpdate(t *testing.T) {
 	collection.Find(bson.M{"UserID": "abc@synerzip.com"}).One(&participant)
 	if strings.Compare(participant.Included, "NO") != 0 {
 		t.Errorf("dummyParticipant not updated")
+	}
+	if participant.AvailableDate != "2016-01-15T00:00:00Z" {
+		t.Errorf("dummyParticipant not added")
 	}
 }
 

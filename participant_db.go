@@ -10,6 +10,8 @@ type Participant struct {
 	UserID        string        `bson:"UserID"`
 	Included      string        `bson:"Included"`
 	Participation string        `bson:"Participation"`
+	AvailableDate string        `bson:"AvailableDate"`
+	Notes         string        `bson:"Notes"`
 }
 
 func GetAllParticipants() (participants []Participant) {
