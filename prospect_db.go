@@ -5,20 +5,26 @@ import (
 	"log"
 )
 
+type ConfCall struct {
+	ConfDateStart string `bson:"ConfDateStart",omitempty`
+	ConfDateEnd   string `bson:"ConfDateEnd",omitempty`
+	ConfType      string `bson:"ConfType",omitempty`
+}
 type Prospect struct {
 	ProspectID      bson.ObjectId `bson:"ProspectID"`
 	Name            string        `bson:"Name",omitempty`
-	ConfDateStart   string        `bson:"ConfDateStart",omitempty`
-	ConfDateEnd     string        `bson:"ConfDateEnd",omitempty`
+	ConfCalls       []ConfCall    `bson:"ConfCalls",omitempty`
 	TechStack       string        `bson:"TechStack",omitempty`
 	Domain          string        `bson:"Domain",omitempty`
 	DesiredTeamSize int           `bson:"DesiredTeamSize",omitempty`
-	Notes           string        `bson:"Notes",omitempty`
+	ProspectNotes   string        `bson:"ProspectNotes",omitempty`
+	ClientNotes     string        `bson:"ClientNotes",omitempty`
 	SalesID         string        `bson:"SalesID",omitempty`
 	CreateDate      string        `bson:"CreateDate",omitempty`
 	StartDate       string        `bson:"StartDate",omitempty`
 	BUHead          string        `bson:"BUHead",omitempty`
 	TeamSize        int           `bson:"TeamSize",omitempty`
+	ProspectStatus  string        `bson:"ProspectStatus",omitempty`
 }
 
 func GetAllProspects() (prospects []Prospect) {

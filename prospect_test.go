@@ -16,7 +16,15 @@ func TestProspectAdd(t *testing.T) {
     "TechStack":"Java",
     "Domain":"dummy",
     "TeamSize":3,
-    "Notes":"Dummy Notes for the prospect"
+    "ProspectNotes":"Prospect Notes for the prospect",
+    "ClientNotes":"Client Notes for prospect",
+    "ConfCalls":[{"ConfDateStart":"2015-12-19T07:00",
+			"ConfDateEnd":"2015-12-19T08:00",
+			"ConfType":"PrepCall"},
+			{"ConfDateStart":"2015-12-20T07:00",
+			"ConfDateEnd":"2015-12-20T08:00",
+			"ConfType":"EnggCall"}],
+		"ProspectStatus":"NewlyCreated"
   }`)
 	req, _ := http.NewRequest("POST", "/prospect/", bytes.NewBuffer(reqStr))
 	w := httptest.NewRecorder()
@@ -33,6 +41,15 @@ func TestProspectAdd(t *testing.T) {
 	var prospect Prospect
 	collection.Find(bson.M{"Name": "dummyProspect"}).One(&prospect)
 	if prospect.Name != "dummyProspect" {
+		t.Errorf("dummyProspect not added")
+	}
+	if prospect.ConfCalls[0].ConfType != "PrepCall" {
+		t.Errorf("dummyProspect not added")
+	}
+	if prospect.ConfCalls[1].ConfDateStart != "2015-12-20T07:00" {
+		t.Errorf("dummyProspect not added")
+	}
+	if prospect.ProspectStatus != "NewlyCreated" {
 		t.Errorf("dummyProspect not added")
 	}
 }
@@ -55,7 +72,8 @@ func TestProspectUpdate(t *testing.T) {
     "TechStack":"Java",
     "Domain":"dummy",
     "TeamSize":31,
-    "Notes":"Dummy Notes for the prospect"
+    "ProspectNotes":"Dummy Notes for the prospect",
+    "ClientNotes":"Updated client Notes"
     }`, prospect.ProspectID.Hex())
 
 	req, _ := http.NewRequest("PUT", "/prospect/",
@@ -70,6 +88,9 @@ func TestProspectUpdate(t *testing.T) {
 	//check if dummyProspect updated
 	collection.Find(bson.M{"Name": "dummyProspect"}).One(&prospect)
 	if prospect.TeamSize != 31 {
+		t.Errorf("dummyProspect not updated")
+	}
+	if prospect.ClientNotes != "Updated client Notes" {
 		t.Errorf("dummyProspect not updated")
 	}
 }

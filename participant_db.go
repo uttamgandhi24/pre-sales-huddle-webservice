@@ -6,12 +6,12 @@ import (
 )
 
 type Participant struct {
-	ProspectID    bson.ObjectId `bson:"ProspectID"`
-	UserID        string        `bson:"UserID"`
-	Included      string        `bson:"Included"`
-	Participation string        `bson:"Participation"`
-	AvailableDate string        `bson:"AvailableDate"`
-	Notes         string        `bson:"Notes"`
+	ProspectID        bson.ObjectId `bson:"ProspectID"`
+	UserID            string        `bson:"UserID"`
+	Included          string        `bson:"Included"`
+	ParticipationRole string        `bson:"ParticipationRole"`
+	AvailableDate     string        `bson:"AvailableDate"`
+	Notes             string        `bson:"Notes"`
 }
 
 func GetAllParticipants() (participants []Participant) {

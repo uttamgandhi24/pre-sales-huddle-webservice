@@ -53,7 +53,8 @@ func TestDiscussionUpdate(t *testing.T) {
     "ProspectID":"5665594d4ba30d74a3c3ac83",
     "UserID":"abc@synerzip.com",
     "Query":"Simple Question",
-    "Answer":"Simple Answer"
+    "Answers":[{"AnswerStr":"Simple Answer1","UserID":"890@synerzip.com"},
+    	{"AnswerStr":"Simple Answer2","UserID":"980@synerzip.com"}]
     }`, discussion.DiscussionID.Hex())
 
 	req, _ := http.NewRequest("PUT", "/discussion/",
@@ -67,7 +68,13 @@ func TestDiscussionUpdate(t *testing.T) {
 
 	//check if dummyDiscussion updated
 	collection.Find(bson.M{"UserID": "abc@synerzip.com"}).One(&discussion)
-	if strings.Compare(discussion.Answer, "Simple Answer") != 0 {
+	if strings.Compare(discussion.Answers[0].AnswerStr, "Simple Answer1") != 0 {
+		t.Errorf("dummyDiscussion not updated")
+	}
+	if strings.Compare(discussion.Answers[1].AnswerStr, "Simple Answer2") != 0 {
+		t.Errorf("dummyDiscussion not updated")
+	}
+	if strings.Compare(discussion.Answers[0].UserID, "890@synerzip.com") != 0 {
 		t.Errorf("dummyDiscussion not updated")
 	}
 }

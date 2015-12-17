@@ -5,12 +5,17 @@ import (
 	"log"
 )
 
+type Answer struct {
+	AnswerStr string `bson:"AnswerStr"`
+	UserID    string `bson:"UserID"`
+}
+
 type Discussion struct {
 	DiscussionID bson.ObjectId `bson:"DiscussionID"`
 	ProspectID   bson.ObjectId `bson:"ProspectID"`
 	UserID       string        `bson:"UserID"`
 	Query        string        `bson:"Query"`
-	Answer       string        `bson:"Answer"`
+	Answers      []Answer      `bson:"Answers"`
 }
 
 func GetAllDiscussions() (discussions []Discussion) {
