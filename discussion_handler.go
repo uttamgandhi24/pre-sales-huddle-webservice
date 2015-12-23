@@ -65,3 +65,22 @@ func DiscussionUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func DiscussionAnswerAddHandler(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(body))
+	var discussion Discussion
+	err = json.Unmarshal(body, &discussion)
+	if err != nil {
+		panic(err)
+	}
+	err = discussion.AddAnswer()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

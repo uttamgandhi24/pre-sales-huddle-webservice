@@ -9,6 +9,8 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/prospect/all/", ProspectViewHandler).Methods("GET")
 	router.HandleFunc("/prospect/", ProspectAddHandler).Methods("POST")
 	router.HandleFunc("/prospect/", ProspectUpdateHandler).Methods("PUT")
+	router.HandleFunc("/prospect/confcall",
+		ProspectConfCallAddHandler).Methods("POST")
 
 	router.HandleFunc("/participant/all/", ParticipantViewHandler).Methods("GET")
 	router.HandleFunc("/participant/userid/{userid}", ParticipantViewByUserId).
@@ -24,6 +26,8 @@ func AddHandlers(router *mux.Router) {
 		DiscussionViewByProspectId).Methods("GET")
 	router.HandleFunc("/discussion/", DiscussionAddHandler).Methods("POST")
 	router.HandleFunc("/discussion/", DiscussionUpdateHandler).Methods("PUT")
+	router.HandleFunc("/discussion/answer",
+		DiscussionAnswerAddHandler).Methods("POST")
 
 	router.HandleFunc("/user/all/", UserViewHandler).Methods("GET")
 	router.HandleFunc("/user/email/{email}", UserViewByEmail).Methods("GET")

@@ -56,7 +56,20 @@ func (prospect *Prospect) Write() (err error) {
 	}
 	return err
 }
+func (prospect *Prospect) AddConfCall() (err error) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
 
+	collection := session.DB(kPreSalesDB).C(kProspectsTable)
+
+	// Add new call to conf call array
+	err = collection.Update(bson.M{"ProspectID": prospect.ProspectID},
+		bson.M{"$pushAll": bson.M{"ConfCalls": prospect.ConfCalls}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return err
+}
 func (prospect *Prospect) Update() (err error) {
 	session := gPshServer.session.Copy()
 	defer session.Close()

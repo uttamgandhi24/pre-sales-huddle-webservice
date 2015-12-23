@@ -74,3 +74,16 @@ func (discussion *Discussion) Update() (err error) {
 	}
 	return nil
 }
+
+func (discussion *Discussion) AddAnswer() (err error) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
+
+	collection.Update(bson.M{"DiscussionID": discussion.DiscussionID},
+		bson.M{"$pushAll": bson.M{"Answers": discussion.Answers}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return err
+}

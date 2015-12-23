@@ -79,6 +79,45 @@ func TestDiscussionUpdate(t *testing.T) {
 	}
 }
 
+func TestDiscussionAddAnswer(t *testing.T) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kDiscussionsTable)
+	var discussion Discussion
+	collection.Find(bson.M{"UserID": "abc@synerzip.com"}).One(&discussion)
+	if discussion.UserID != "abc@synerzip.com" {
+		t.Errorf("dummyDiscussion not found")
+	}
+
+	// Add answer
+	requestString := fmt.Sprintf(`{
+    "DiscussionID":"%v",
+    "Answers":[{"AnswerStr":"Simple Answer3","UserID":"9990@synerzip.com"},
+    {"AnswerStr":"Simple Answer4","UserID":"98990@synerzip.com"}]
+    }`, discussion.DiscussionID.Hex())
+
+	req, _ := http.NewRequest("POST", "/discussion/answer",
+		bytes.NewBuffer([]byte(requestString)))
+
+	w := httptest.NewRecorder()
+	gPshServer.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("/discussion/answer POST request didn't return %v", http.StatusOK)
+	}
+
+	//check if answer added
+	collection.Find(bson.M{"UserID": "abc@synerzip.com"}).One(&discussion)
+	if strings.Compare(discussion.Answers[2].AnswerStr, "Simple Answer3") != 0 {
+		t.Errorf("add answer fail")
+	}
+	if strings.Compare(discussion.Answers[3].AnswerStr, "Simple Answer4") != 0 {
+		t.Errorf("add answer fail")
+	}
+	if strings.Compare(discussion.Answers[2].UserID, "9990@synerzip.com") != 0 {
+		t.Errorf("add answer fail")
+	}
+}
+
 func TestDiscussionAll(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/discussion/all/", nil)
 	w := httptest.NewRecorder()

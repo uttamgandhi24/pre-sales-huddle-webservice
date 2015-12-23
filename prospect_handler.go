@@ -51,6 +51,29 @@ func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ProspectConfCallAddHandler(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(body))
+	var prospect Prospect
+	err = json.Unmarshal(body, &prospect)
+
+	if len(prospect.ProspectID) == 0 {
+		http.Error(w, "Invalid Data", http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		panic(err)
+	}
+	err = prospect.AddConfCall()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
 func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)

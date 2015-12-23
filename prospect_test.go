@@ -95,6 +95,48 @@ func TestProspectUpdate(t *testing.T) {
 	}
 }
 
+func TestProspectAddConfCall(t *testing.T) {
+	// Get ProspectID for dummyProspect
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kProspectsTable)
+	var prospect Prospect
+	collection.Find(bson.M{"Name": "dummyProspect"}).One(&prospect)
+	if prospect.Name != "dummyProspect" {
+		t.Errorf("dummyProspect not added")
+	}
+
+	// Add confcall
+	requestString := fmt.Sprintf(`{
+    "ProspectID":"%v",
+    "ConfCalls":[{"ConfDateStart":"2015-12-27T07:00",
+			"ConfDateEnd":"2015-12-27T08:00",
+			"ConfType":"PrepCall"},
+			{"ConfDateStart":"2015-12-28T07:00",
+			"ConfDateEnd":"2015-12-28T08:00",
+			"ConfType":"EnggCall"}]
+    }`, prospect.ProspectID.Hex())
+
+	req, _ := http.NewRequest("POST", "/prospect/confcall",
+		bytes.NewBuffer([]byte(requestString)))
+
+	w := httptest.NewRecorder()
+	gPshServer.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("/prospect/confcall POST request didn't return %v", http.StatusOK)
+	}
+
+	//check if confcalls updated
+	collection.Find(bson.M{"Name": "dummyProspect"}).One(&prospect)
+	if prospect.ConfCalls[0].ConfType != "PrepCall" {
+		t.Errorf("add confcall fail")
+	}
+	if prospect.ConfCalls[1].ConfDateStart != "2015-12-28T07:00" {
+		t.Errorf("add confcall fail")
+	}
+
+}
+
 func TestProspectAll(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/prospect/all/", nil)
 	w := httptest.NewRecorder()
