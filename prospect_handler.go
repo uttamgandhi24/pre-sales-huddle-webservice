@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	//"github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 )
@@ -17,16 +17,18 @@ func ProspectViewHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*func ProspectViewCriteriaHandler(w http.ResponseWriter, r *http.Request) {
+func ProspectViewByProspectIdHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	criteria := vars["criteria"]
+	prospectid := vars["prospectid"]
 
-	if err := json.NewEncoder(w).Encode(GetProspectsByCriteria(criteria)); err != nil {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(GetProspectByProspectId(prospectid)); err != nil {
 		fmt.Println("Err")
 		panic(err)
 	}
 }
-*/
+
 func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -75,7 +77,6 @@ func ProspectConfCallAddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)

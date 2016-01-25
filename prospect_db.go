@@ -6,25 +6,27 @@ import (
 )
 
 type ConfCall struct {
-	ConfDateStart string `bson:"ConfDateStart",omitempty`
-	ConfDateEnd   string `bson:"ConfDateEnd",omitempty`
-	ConfType      string `bson:"ConfType",omitempty`
+	ConfDateStart   string   `bson:"ConfDateStart",omitempty`
+	ConfDateEnd     string   `bson:"ConfDateEnd",omitempty`
+	ConfType        string   `bson:"ConfType",omitempty`
+	ConfParticipant []string `bson:"ConfParticipant", omitempty`
 }
 type Prospect struct {
-	ProspectID      bson.ObjectId `bson:"ProspectID"`
-	Name            string        `bson:"Name",omitempty`
-	ConfCalls       []ConfCall    `bson:"ConfCalls",omitempty`
-	TechStack       string        `bson:"TechStack",omitempty`
-	Domain          string        `bson:"Domain",omitempty`
-	DesiredTeamSize int           `bson:"DesiredTeamSize",omitempty`
-	ProspectNotes   string        `bson:"ProspectNotes",omitempty`
-	ClientNotes     string        `bson:"ClientNotes",omitempty`
-	SalesID         string        `bson:"SalesID",omitempty`
-	CreateDate      string        `bson:"CreateDate",omitempty`
-	StartDate       string        `bson:"StartDate",omitempty`
-	BUHead          string        `bson:"BUHead",omitempty`
-	TeamSize        int           `bson:"TeamSize",omitempty`
-	ProspectStatus  string        `bson:"ProspectStatus",omitempty`
+	ProspectID        bson.ObjectId `bson:"ProspectID"`
+	Name              string        `bson:"Name",omitempty`
+	ConfCalls         []ConfCall    `bson:"ConfCalls",omitempty`
+	TechStack         string        `bson:"TechStack",omitempty`
+	Domain            string        `bson:"Domain",omitempty`
+	DesiredTeamSize   int           `bson:"DesiredTeamSize",omitempty`
+	ProspectNotes     string        `bson:"ProspectNotes",omitempty`
+	ClientNotes       string        `bson:"ClientNotes",omitempty`
+	SalesID           string        `bson:"SalesID",omitempty`
+	CreateDate        string        `bson:"CreateDate",omitempty`
+	StartDate         string        `bson:"StartDate",omitempty`
+	BUHead            string        `bson:"BUHead",omitempty`
+	TeamSize          int           `bson:"TeamSize",omitempty`
+	ProspectStatus    string        `bson:"ProspectStatus",omitempty`
+	DeadProspectNotes string        `bson:"DeadProspectNotes",omitempty`
 }
 
 func GetAllProspects() (prospects []Prospect) {
@@ -40,6 +42,16 @@ func GetAllProspects() (prospects []Prospect) {
 		prospects = append(prospects, prospect)
 	}
 	return
+}
+
+func GetProspectByProspectId(prospectID string) (prospect Prospect) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+
+	collection := session.DB(kPreSalesDB).C(kProspectsTable)
+	prospectIDHex := bson.ObjectIdHex(prospectID)
+	collection.Find(bson.M{"ProspectID": prospectIDHex}).One(&prospect)
+	return prospect
 }
 
 func (prospect *Prospect) Write() (err error) {

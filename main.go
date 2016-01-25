@@ -30,7 +30,11 @@ func main() {
 	gPshServer = PSHServer{router, session}
 
 	http.Handle("/", &gPshServer)
+	//TODO: use -indexDir flag to take input from user
+	http.Handle("/presaleshuddle/", http.StripPrefix("/presaleshuddle/",
+		http.FileServer(http.Dir("../../PreSales-Huddle/app/"))))
 
+	//TODO: Take -port input from user
 	fmt.Println("Listening on 8080")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
