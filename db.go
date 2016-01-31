@@ -14,7 +14,11 @@ const kParticipantsTable string = "participants"
 const kUsersTable string = "users"
 
 func ConnectDB() (session *mgo.Session) {
-	session, err := mgo.Dial(kMongoConnectURL)
+	var mongoConnectURL string
+	if mongoConnectURL = os.Getenv("PRESALES_MONGO_CONNECT_URL"); len(mongoConnectURL) == 0 {
+		mongoConnectURL = kMongoConnectURL
+	}
+	session, err := mgo.Dial(mongoConnectURL)
 	if err != nil {
 		fmt.Printf("Can't connect to mongo, go error %v\n", err)
 		os.Exit(1)

@@ -47,8 +47,6 @@ func AddHandlers(router *mux.Router) {
 }
 
 func (server *PSHServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("ServerHTTP->", r.URL)
-
 	if origin := r.Header.Get("Origin"); origin != "" {
 		w.Header().Set("Access-Control-Allow-Origin", origin)
 		w.Header().Set("Access-Control-Allow-Methods", `POST, GET, OPTIONS,
@@ -153,9 +151,6 @@ func generateJWT() (tokenString string, err error) {
 }
 func AuthenticateJWT(header map[string][]string) bool {
 	if header["Authentication"] == nil {
-		fmt.Println("Header Authentication not found")
-		fmt.Println(header)
-		fmt.Println(header["Access-Control-Request-Headers"])
 		return false
 	}
 

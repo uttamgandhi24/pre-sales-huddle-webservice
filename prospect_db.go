@@ -6,11 +6,14 @@ import (
 )
 
 type ConfCall struct {
-	ConfDateStart   string   `bson:"ConfDateStart",omitempty`
-	ConfDateEnd     string   `bson:"ConfDateEnd",omitempty`
-	ConfType        string   `bson:"ConfType",omitempty`
-	ConfParticipant []string `bson:"ConfParticipant", omitempty`
+	ConfDateStart      string   `bson:"ConfDateStart",omitempty`
+	ConfDateEnd        string   `bson:"ConfDateEnd",omitempty`
+	ConfType           string   `bson:"ConfType",omitempty`
+	ConfParticipant    []string `bson:"ConfParticipant", omitempty`
+	GoogleCalenderLink string   `bson:"GoogleCalenderLink", omitempty`
+	EnggFacilitator    string   `bson:"EnggFacilitator", omitempty`
 }
+
 type Prospect struct {
 	ProspectID        bson.ObjectId `bson:"ProspectID"`
 	Name              string        `bson:"Name",omitempty`
@@ -27,6 +30,10 @@ type Prospect struct {
 	TeamSize          int           `bson:"TeamSize",omitempty`
 	ProspectStatus    string        `bson:"ProspectStatus",omitempty`
 	DeadProspectNotes string        `bson:"DeadProspectNotes",omitempty`
+	KeyContacts       string        `bson:"KeyContacts",omitempty`
+	WebsiteURL        string        `bson:"WebsiteURL",omitempty`
+	FolderURL         string        `bson:"FolderURL",omitempty`
+	Revenue           string        `bson:"Revenue",omitempty`
 }
 
 func GetAllProspects() (prospects []Prospect) {

@@ -20,11 +20,16 @@ func TestProspectAdd(t *testing.T) {
     "ClientNotes":"Client Notes for prospect",
     "ConfCalls":[{"ConfDateStart":"2015-12-19T07:00",
 			"ConfDateEnd":"2015-12-19T08:00",
-			"ConfType":"PrepCall"},
+			"ConfType":"PrepCall",
+			"EnggFacilitator":"xyz@synerzip.com",
+			"GoogleCalenderLink":"www.calendar.com"},
 			{"ConfDateStart":"2015-12-20T07:00",
 			"ConfDateEnd":"2015-12-20T08:00",
-			"ConfType":"EnggCall"}],
-		"ProspectStatus":"NewlyCreated"
+			"ConfType":"EnggCall",
+			"GoogleCalenderLink":"www.calendar2.com",
+			"EnggFacilitator":"xyzw@synerzip.com"}],
+		"ProspectStatus":"NewlyCreated",
+		"WebsiteURL":"www.synerzip.com"
   }`)
 	req, _ := http.NewRequest("POST", "/prospect/", bytes.NewBuffer(reqStr))
 	w := httptest.NewRecorder()
@@ -49,7 +54,13 @@ func TestProspectAdd(t *testing.T) {
 	if prospect.ConfCalls[1].ConfDateStart != "2015-12-20T07:00" {
 		t.Errorf("dummyProspect not added")
 	}
+	if prospect.ConfCalls[1].GoogleCalenderLink != "www.calendar2.com" {
+		t.Errorf("dummyProspect not added")
+	}
 	if prospect.ProspectStatus != "NewlyCreated" {
+		t.Errorf("dummyProspect not added")
+	}
+	if prospect.WebsiteURL != "www.synerzip.com" {
 		t.Errorf("dummyProspect not added")
 	}
 }
