@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2"
 	"net/http"
+	"os"
 )
 
 type PSHServer struct {
@@ -36,7 +37,7 @@ func main() {
 
 	//TODO: Take -port input from user
 	fmt.Println("Listening on 8080")
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	if err != nil {
 		fmt.Println(err)
 	}
