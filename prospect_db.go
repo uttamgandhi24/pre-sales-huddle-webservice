@@ -101,3 +101,15 @@ func (prospect *Prospect) Update() (err error) {
 
 	return nil
 }
+
+func (prospect *Prospect) MarshalEmail() (str string) {
+	str = "Prospect Name: " + prospect.Name + "\r" +
+		"Technology Stack: " + prospect.TechStack + "\r" +
+		"Domain: " + prospect.Domain + "\r" +
+		"Creation Date: " + prospect.CreateDate + "\r" +
+		"Revenue: " + prospect.Revenue + "\r" +
+		"Website: " + prospect.WebsiteURL + "\r" +
+		"Key Contacts: " + prospect.KeyContacts + "\n\r" +
+		"Notes: " + prospect.ProspectNotes + "\n"
+	return str
+}

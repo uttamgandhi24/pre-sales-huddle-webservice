@@ -35,22 +35,23 @@ func ProspectAddHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	fmt.Println(string(body))
-	var t Prospect
-	err = json.Unmarshal(body, &t)
+	var prospect Prospect
+	err = json.Unmarshal(body, &prospect)
 
-	if t.Name == "" {
+	if prospect.Name == "" {
 		http.Error(w, "Invalid Data", http.StatusBadRequest)
 		return
 	}
 	if err != nil {
 		panic(err)
 	}
-	err = t.Write()
+	err = prospect.Write()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	Notify(NPProspectCreated, prospect)
 }
 
 func ProspectConfCallAddHandler(w http.ResponseWriter, r *http.Request) {

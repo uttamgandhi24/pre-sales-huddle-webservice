@@ -6,8 +6,9 @@ import (
 )
 
 type User struct {
-	Email string `bson:"Email"`
-	Role  string `bson:"Role"`
+	Email         string   `bson:"Email"`
+	Role          string   `bson:"Role"`
+	Notifications []NPType `bson:"Notifications"`
 }
 
 func GetAllUsers() (users []User) {
