@@ -102,7 +102,7 @@ func (prospect *Prospect) Update() (err error) {
 	return nil
 }
 
-func (prospect *Prospect) MarshalEmail() (str string) {
+func (prospect Prospect) GetEmailText() (str string) {
 	str = "Prospect Name: " + prospect.Name + "\r" +
 		"Technology Stack: " + prospect.TechStack + "\r" +
 		"Domain: " + prospect.Domain + "\r" +
@@ -111,5 +111,10 @@ func (prospect *Prospect) MarshalEmail() (str string) {
 		"Website: " + prospect.WebsiteURL + "\r" +
 		"Key Contacts: " + prospect.KeyContacts + "\n\r" +
 		"Notes: " + prospect.ProspectNotes + "\n"
+	return str
+}
+
+func (prospect Prospect) GetEmailContext() (str string) {
+	str = prospect.SalesID
 	return str
 }

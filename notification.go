@@ -17,7 +17,12 @@ var NPTypeText = map[NPType]string{
 	NPProspectCreated: "A new Prospect Added by ",
 }
 
-func Notify(notificationPref NPType, prospect Prospect) {
+type Mailer interface {
+	GetEmailText() string
+	GetEmailContext() string
+}
+
+func Notify(notificationPref NPType, mailer Mailer) {
 	fmt.Println("NOTIFY")
 	users := GetAllUsers()
 
@@ -27,8 +32,8 @@ func Notify(notificationPref NPType, prospect Prospect) {
 			if notification == notificationPref {
 				fmt.Println("Send email for ", user.Email)
 				emailMsg := EmailMessage{To: user.Email,
-					Subject: NPTypeText[notificationPref] + prospect.SalesID,
-					Body:    prospect.MarshalEmail()}
+					Subject: NPTypeText[notificationPref] + mailer.GetEmailContext(),
+					Body:    mailer.GetEmailText()}
 				fmt.Println(emailMsg)
 				SendEmail(emailMsg)
 			}
