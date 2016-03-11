@@ -45,3 +45,27 @@ func UserViewByEmail(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
+func UserNotificationUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("In UserNotificationHandler")
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(body))
+	var user User
+	err = json.Unmarshal(body, &user)
+	fmt.Println("In user", user.Email)
+	if len(user.Email) == 0 {
+		http.Error(w, "Invalid Data", http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		panic(err)
+	}
+	err = user.UpdateNotification()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

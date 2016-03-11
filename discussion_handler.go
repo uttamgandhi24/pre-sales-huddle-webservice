@@ -28,23 +28,24 @@ func DiscussionViewByProspectId(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DiscussionAddHandler(w http.ResponseWriter, r *http.Request) {
+func DiscussionQuestionAddHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(string(body))
-	var t Discussion
-	err = json.Unmarshal(body, &t)
+	var discussion Discussion
+	err = json.Unmarshal(body, &discussion)
 	if err != nil {
 		panic(err)
 	}
-	err = t.Write()
+	err = discussion.Write()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	Notify(NPQuestionPosted, discussion)
 }
 
 func DiscussionUpdateHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,4 +84,5 @@ func DiscussionAnswerAddHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	Notify(NPQuestionAnswered, discussion)
 }

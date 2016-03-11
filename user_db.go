@@ -44,3 +44,18 @@ func (user *User) Write() (err error) {
 	}
 	return err
 }
+func (user *User) UpdateNotification() (err error) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+
+	collection := session.DB(kPreSalesDB).C(kUsersTable)
+
+	// Add new call to conf call array
+	err = collection.Update(bson.M{"Email": user.Email},
+		bson.M{"$set": bson.M{"Notifications": user.Notifications}})
+	if err != nil {
+
+		log.Fatal("update notification error", err)
+	}
+	return err
+}

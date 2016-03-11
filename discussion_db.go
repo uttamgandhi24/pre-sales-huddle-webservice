@@ -87,3 +87,27 @@ func (discussion *Discussion) AddAnswer() (err error) {
 	}
 	return err
 }
+
+func (discussion Discussion) GetEmailText(notificationPref NPType) (str string) {
+	switch notificationPref {
+	case NPQuestionPosted:
+		str = "User ID: " + discussion.UserID + "\r" +
+			"Query: " + discussion.Query + "\n"
+
+	case NPQuestionAnswered:
+		str = "User ID: " + discussion.UserID + "\r" +
+			"Answer: " + discussion.Answers[len(discussion.Answers)-1].AnswerStr + "\n"
+	}
+	return str
+}
+
+func (discussion Discussion) GetEmailContext(notificationPref NPType) (str string) {
+
+	switch notificationPref {
+	case NPQuestionPosted:
+		str = "Question Posted"
+	case NPQuestionAnswered:
+		str = "Question Answered"
+	}
+	return str
+}

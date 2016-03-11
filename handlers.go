@@ -20,6 +20,8 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/prospect/prospectid/{prospectid}", ProspectViewByProspectIdHandler).Methods("GET")
 	router.HandleFunc("/prospect/", ProspectAddHandler).Methods("POST")
 	router.HandleFunc("/prospect/", ProspectUpdateHandler).Methods("PUT")
+	router.HandleFunc("/prospect/toclient", ProspectToClientHandler).Methods("PUT")
+	router.HandleFunc("/prospect/todead", ProspectToDeadHandler).Methods("PUT")
 	router.HandleFunc("/prospect/confcall",
 		ProspectConfCallAddHandler).Methods("POST")
 
@@ -35,7 +37,7 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/discussion/all/", DiscussionViewHandler).Methods("GET")
 	router.HandleFunc("/discussion/prospectid/{id}",
 		DiscussionViewByProspectId).Methods("GET")
-	router.HandleFunc("/discussion/", DiscussionAddHandler).Methods("POST")
+	router.HandleFunc("/discussion/question", DiscussionQuestionAddHandler).Methods("POST")
 	router.HandleFunc("/discussion/", DiscussionUpdateHandler).Methods("PUT")
 	router.HandleFunc("/discussion/answer",
 		DiscussionAnswerAddHandler).Methods("POST")
@@ -43,6 +45,7 @@ func AddHandlers(router *mux.Router) {
 	router.HandleFunc("/user/all/", UserViewHandler).Methods("GET")
 	router.HandleFunc("/user/email/{email}", UserViewByEmail).Methods("GET")
 	router.HandleFunc("/user/", UserAddHandler).Methods("POST")
+	router.HandleFunc("/user/notification", UserNotificationUpdateHandler).Methods("PUT")
 
 }
 
@@ -149,12 +152,11 @@ func generateJWT() (tokenString string, err error) {
 	tokenString, err = token.SignedString([]byte("secret"))
 	return tokenString, err
 }
-func AuthenticateJWT(header map[string][]string) bool {
-	if header["Authentication"] == nil {
+func AuthenticateJWT(header http.Header) bool {
+	jwtString := header.Get("Authentication")
+	if len(jwtString) == 0 {
 		return false
 	}
-
-	jwtString := header["Authentication"][0]
 	token, err := jwt.Parse(jwtString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

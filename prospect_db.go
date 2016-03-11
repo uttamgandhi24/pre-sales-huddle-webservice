@@ -102,19 +102,23 @@ func (prospect *Prospect) Update() (err error) {
 	return nil
 }
 
-func (prospect Prospect) GetEmailText() (str string) {
-	str = "Prospect Name: " + prospect.Name + "\r" +
-		"Technology Stack: " + prospect.TechStack + "\r" +
-		"Domain: " + prospect.Domain + "\r" +
-		"Creation Date: " + prospect.CreateDate + "\r" +
-		"Revenue: " + prospect.Revenue + "\r" +
-		"Website: " + prospect.WebsiteURL + "\r" +
-		"Key Contacts: " + prospect.KeyContacts + "\n\r" +
-		"Notes: " + prospect.ProspectNotes + "\n"
+func (prospect Prospect) GetEmailText(notificationPref NPType) (str string) {
+	switch notificationPref {
+	case NPProspectCreated:
+		str = "Prospect Name: " + prospect.Name + "\r" +
+			"Technology Stack: " + prospect.TechStack + "\r" +
+			"Domain: " + prospect.Domain + "\r" +
+			"Creation Date: " + prospect.CreateDate + "\r" +
+			"Revenue: " + prospect.Revenue + "\r" +
+			"Website: " + prospect.WebsiteURL + "\r" +
+			"Key Contacts: " + prospect.KeyContacts + "\n\r" +
+			"Notes: " + prospect.ProspectNotes + "\n"
+	}
+
 	return str
 }
 
-func (prospect Prospect) GetEmailContext() (str string) {
+func (prospect Prospect) GetEmailContext(notificationPref NPType) (str string) {
 	str = prospect.SalesID
 	return str
 }
