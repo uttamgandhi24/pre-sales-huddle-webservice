@@ -73,6 +73,19 @@ func (user User) hasUserCreatedProspect(prospectID bson.ObjectId) (bool) {
 	return hasCreated
 }
 
+func (user User) hasVolunteeredForProspect(prospectID bson.ObjectId) (bool) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kParticipantsTable)
+	var participant *Participant
+	collection.Find(bson.M{"UserID": user.Email, "ProspectID": prospectID}).One(&participant)
+	hasCreated := false
+	if participant != nil {
+		hasCreated = true
+	}
+	return hasCreated
+}
+
 func (user User) IsInterestedInNotification(notification NPType, prospectID bson.ObjectId) (bool) {
 	isInterested := false
 	if user.Notifications.HasNotification(notification) {
@@ -82,7 +95,7 @@ func (user User) IsInterestedInNotification(notification NPType, prospectID bson
 			if user.Role == "Sales" && user.hasUserCreatedProspect(prospectID) {
 				// relevant only if prospect created by self
 				isInterested =  true
-			} else if user.Role == "Engineer" {
+			} else if user.Role == "Engineer" && user.hasVolunteeredForProspect(prospectID) {
 				isInterested = true
 			}
 		}
