@@ -104,7 +104,7 @@ func (prospect *Prospect) Update() (err error) {
 
 func (prospect Prospect) GetEmailText(notificationPref NPType) (str string) {
 	switch notificationPref {
-	case NPProspectCreated:
+	case NPProspectCreated, NPProspectUpdated:
 		str = "Prospect Name: " + prospect.Name + "\r" +
 			"Technology Stack: " + prospect.TechStack + "\r" +
 			"Domain: " + prospect.Domain + "\r" +
@@ -113,12 +113,30 @@ func (prospect Prospect) GetEmailText(notificationPref NPType) (str string) {
 			"Website: " + prospect.WebsiteURL + "\r" +
 			"Key Contacts: " + prospect.KeyContacts + "\n\r" +
 			"Notes: " + prospect.ProspectNotes + "\n"
+	case NPCallScheduled:
+		str = "Call Scheduled. Please check Calendar Event."
+	case NPProspectDead:
+		str = "Prospect Name: " + prospect.Name + "\n\r" +
+			"Notes: "+ prospect.DeadProspectNotes + "\n"
+	case NPProspectClient:
+		str = "Prospect Name: " + prospect.Name + "\n\r" +
+			"Notes: "+ prospect.ClientNotes + "\n"
 	}
-
 	return str
 }
 
 func (prospect Prospect) GetEmailContext(notificationPref NPType) (str string) {
-	str = prospect.SalesID
+	switch notificationPref {
+	case NPProspectCreated:
+		str = "A new prospect created " + prospect.SalesID
+	case NPCallScheduled:
+		str = "Call Scheduled for " + prospect.Name
+	case NPProspectDead:
+		str = "Oops.. A prospect went Dead " + prospect.Name
+	case NPProspectClient:
+		str = "A prospect was converted into a Client " + prospect.Name
+	case NPProspectUpdated:
+		str = "Prospect was updated " + prospect.Name
+	}
 	return str
 }

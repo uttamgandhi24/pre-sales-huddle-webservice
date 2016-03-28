@@ -75,3 +75,22 @@ func (participant *Participant) Update() (err error) {
 	}
 	return err
 }
+
+func (participant Participant) GetEmailText(notificationPref NPType) (str string) {
+	switch notificationPref {
+	case NPSomeoneVolunteered:
+		prospect := GetProspectByProspectId(participant.ProspectID.Hex())
+		str = "Prospect Name: " + prospect.Name + "\r" +
+			"ParticipationRole: " + participant.ParticipationRole + "\n"
+	}
+	return str
+}
+
+func (participant Participant) GetEmailContext(notificationPref NPType) (str string) {
+	switch notificationPref {
+	case NPSomeoneVolunteered:
+		prospect := GetProspectByProspectId(participant.ProspectID.Hex())
+		str = "A new volunteer for " + prospect.Name;
+	}
+	return str
+}

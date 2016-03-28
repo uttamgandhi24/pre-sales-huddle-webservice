@@ -33,6 +33,7 @@ func ParticipantAddHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	Notify(NPSomeoneVolunteered, t)
 }
 func ParticipantViewByUserId(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

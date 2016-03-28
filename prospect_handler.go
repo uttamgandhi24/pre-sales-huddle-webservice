@@ -78,7 +78,8 @@ func ProspectConfCallAddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	Notify(NPCallScheduled, prospect)
 }
-func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
+
+func updateHandler(w http.ResponseWriter, r *http.Request, notificationPref NPType) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -102,16 +103,18 @@ func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	Notify(NPProspectUpdated, prospect)
+	Notify(notificationPref, prospect)
+}
+
+func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	updateHandler(w, r, NPProspectUpdated)
 }
 
 func ProspectToClientHandler(w http.ResponseWriter, r *http.Request) {
-	//TODO: Implement ProspectToClient
-	var prospect Prospect
-	Notify(NPProspectClient, prospect)
+	updateHandler(w, r, NPProspectClient)
 }
+
 func ProspectToDeadHandler(w http.ResponseWriter, r *http.Request) {
-	//TODO: Implement ProspectToDead
-	var prospect Prospect
-	Notify(NPProspectDead, prospect)
+	updateHandler(w, r, NPProspectDead)
 }
+
