@@ -8,7 +8,7 @@ import (
 type User struct {
 	Email         string   `bson:"Email"`
 	Role          string   `bson:"Role"`
-	Notifications []NPType `bson:"Notifications"`
+	Notifications NPArray `bson:"Notifications"`
 }
 
 func GetAllUsers() (users []User) {
@@ -58,4 +58,11 @@ func (user *User) UpdateNotification() (err error) {
 		log.Fatal("update notification error", err)
 	}
 	return err
+}
+
+func (user User) IsUserInterestedInNotification(notification NPType) (bool) {
+	if user.Notifications.HasNotification(notification) {
+		return true
+	}
+	return false
 }

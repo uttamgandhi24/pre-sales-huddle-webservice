@@ -5,6 +5,7 @@ import (
 )
 
 type NPType int
+type NPArray []NPType
 
 const (
 	NPEveryProspect      NPType = iota
@@ -28,21 +29,28 @@ type Mailer interface {
 	GetEmailContext(notificationPref NPType) string
 }
 
+func (npArray NPArray) HasNotification(notification NPType) (bool) {
+	for _, pref := range npArray {
+		if pref == notification {
+			return true
+		}
+	}
+	return false
+}
+
 func Notify(notificationPref NPType, mailer Mailer) {
 	fmt.Println("NOTIFY")
 	users := GetAllUsers()
 
 	for _, user := range users {
 		fmt.Println(user)
-		for _, notification := range user.Notifications {
-			if notification == notificationPref {
-				fmt.Println("Send email for ", user.Email)
-				emailMsg := EmailMessage{To: user.Email,
-					Subject: NPTypeText[notificationPref] + mailer.GetEmailContext(notificationPref),
-					Body:    mailer.GetEmailText(notificationPref)}
-				fmt.Println(emailMsg)
-				// SendEmail(emailMsg)
-			}
+		if user.IsUserInterestedInNotification(notificationPref) {
+			fmt.Println("Send email for ", user.Email)
+			emailMsg := EmailMessage{To: user.Email,
+				Subject: NPTypeText[notificationPref] + mailer.GetEmailContext(notificationPref),
+				Body:    mailer.GetEmailText(notificationPref)}
+			fmt.Println(emailMsg)
+			// SendEmail(emailMsg)
 		}
 	}
 }
