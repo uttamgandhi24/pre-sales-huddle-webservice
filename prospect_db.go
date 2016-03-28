@@ -140,3 +140,7 @@ func (prospect Prospect) GetEmailContext(notificationPref NPType) (str string) {
 	}
 	return str
 }
+
+func (prospect Prospect) GetProspectID() (bson.ObjectId) {
+	return prospect.ProspectID
+}

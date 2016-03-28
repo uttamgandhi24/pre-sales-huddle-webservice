@@ -111,3 +111,7 @@ func (discussion Discussion) GetEmailContext(notificationPref NPType) (str strin
 	}
 	return str
 }
+
+func (discussion Discussion) GetProspectID() (bson.ObjectId) {
+	return discussion.ProspectID
+}

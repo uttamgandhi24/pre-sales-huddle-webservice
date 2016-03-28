@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type NPType int
@@ -27,6 +28,7 @@ var NPTypeText = map[NPType]string{
 type Mailer interface {
 	GetEmailText(notificationPref NPType) string
 	GetEmailContext(notificationPref NPType) string
+	GetProspectID() bson.ObjectId
 }
 
 func (npArray NPArray) HasNotification(notification NPType) (bool) {
@@ -44,7 +46,7 @@ func Notify(notificationPref NPType, mailer Mailer) {
 
 	for _, user := range users {
 		fmt.Println(user)
-		if user.IsUserInterestedInNotification(notificationPref) {
+		if user.IsInterestedInNotification(notificationPref, mailer.GetProspectID()) {
 			fmt.Println("Send email for ", user.Email)
 			emailMsg := EmailMessage{To: user.Email,
 				Subject: NPTypeText[notificationPref] + mailer.GetEmailContext(notificationPref),

@@ -60,9 +60,33 @@ func (user *User) UpdateNotification() (err error) {
 	return err
 }
 
-func (user User) IsUserInterestedInNotification(notification NPType) (bool) {
-	if user.Notifications.HasNotification(notification) {
-		return true
+func (user User) hasUserCreatedProspect(prospectID bson.ObjectId) (bool) {
+	session := gPshServer.session.Copy()
+	defer session.Close()
+	collection := session.DB(kPreSalesDB).C(kProspectsTable)
+	var prospect *Prospect
+	collection.Find(bson.M{"SalesID": user.Email, "ProspectID": prospectID}).One(&prospect)
+	hasCreated := false
+	if prospect != nil {
+		hasCreated = true
 	}
-	return false
+	return hasCreated
+}
+
+func (user User) IsInterestedInNotification(notification NPType, prospectID bson.ObjectId) (bool) {
+	isInterested := false
+	if user.Notifications.HasNotification(notification) {
+		if user.Notifications.HasNotification(NPEveryProspect) {
+			isInterested = true
+		} else {
+			if user.Role == "Sales" && user.hasUserCreatedProspect(prospectID) {
+				// relevant only if prospect created by self
+				isInterested =  true
+			} else if user.Role == "Engineer" {
+				isInterested = true
+			}
+		}
+		
+	}
+	return isInterested
 }
