@@ -78,7 +78,8 @@ func ProspectConfCallAddHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	Notify(NPCallScheduled, prospect)
 }
-func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
+
+func updateHandler(w http.ResponseWriter, r *http.Request, notificationPref NPType) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -102,54 +103,18 @@ func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	Notify(NPProspectUpdated, prospect)
+	Notify(notificationPref, prospect)
+}
+
+func ProspectUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	updateHandler(w, r, NPProspectUpdated)
 }
 
 func ProspectToClientHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		panic(err)
-	}
-	var prospect Prospect
-	err = json.Unmarshal(body, &prospect)
-	if err != nil {
-		panic(err)
-	}
-
-	if len(prospect.ProspectID) == 0 {
-		http.Error(w, "Invalid Data", http.StatusBadRequest)
-		fmt.Println(prospect.ProspectID)
-		return
-	}
-	err = prospect.Update()
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	Notify(NPProspectClient, prospect)
+	updateHandler(w, r, NPProspectClient)
 }
+
 func ProspectToDeadHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		panic(err)
-	}
-	var prospect Prospect
-	err = json.Unmarshal(body, &prospect)
-	if err != nil {
-		panic(err)
-	}
-
-	if len(prospect.ProspectID) == 0 {
-		http.Error(w, "Invalid Data", http.StatusBadRequest)
-		fmt.Println(prospect.ProspectID)
-		return
-	}
-	err = prospect.Update()
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	Notify(NPProspectDead, prospect)
+	updateHandler(w, r, NPProspectDead)
 }
+
