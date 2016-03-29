@@ -94,3 +94,7 @@ func (participant Participant) GetEmailContext(notificationPref NPType) (str str
 	}
 	return str
 }
+
+func (participant Participant) GetProspectID() (bson.ObjectId) {
+	return participant.ProspectID
+}
